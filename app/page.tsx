@@ -136,14 +136,13 @@ export default function TodayPage() {
   return (
     <div className="min-h-screen pb-8">
       {/* Header */}
-      <header className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700" />
-        <div className="absolute inset-0 opacity-30">
+      <header className="relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
 
-        <div className="relative max-w-md mx-auto px-4 pt-8 pb-12">
+        <div className="relative max-w-md mx-auto px-4 pt-8 pb-8">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-3xl font-black text-white mb-1">Today</h1>
@@ -176,7 +175,7 @@ export default function TodayPage() {
       </header>
 
       {/* Progress section */}
-      <div className="max-w-md mx-auto px-4 -mt-4">
+      <div className="max-w-md mx-auto px-4 pt-6">
         <div className="bg-white rounded-2xl p-4 card-shadow mb-6">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-slate-600">
