@@ -36,42 +36,60 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-md mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome to KeepGoing
-          </h1>
-          <p className="text-gray-600">
-            Set up your daily exercise routine
-          </p>
+    <div className="min-h-screen">
+      {/* Header */}
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700" />
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
 
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">
+        <div className="relative max-w-md mx-auto px-4 pt-12 pb-16 text-center">
+          <div className="text-6xl mb-4 animate-float">💪</div>
+          <h1 className="text-3xl font-black text-white mb-2">
+            Welcome to KeepGoing
+          </h1>
+          <p className="text-white/70 font-medium">
+            Build your daily exercise routine
+          </p>
+        </div>
+      </header>
+
+      <div className="max-w-md mx-auto px-4 -mt-6 pb-8">
+        {/* Add exercise card */}
+        <div className="bg-white rounded-2xl p-5 card-shadow mb-6">
+          <h2 className="text-lg font-bold text-slate-800 mb-4">
             Add your exercises
           </h2>
           <ExerciseForm onSave={addExercise} />
         </div>
 
+        {/* Exercise list */}
         {exercises.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+          <div className="mb-6">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-3 px-1">
               Your Routine ({exercises.length})
             </h3>
             <div className="space-y-2">
-              {exercises.map((exercise) => (
+              {exercises.map((exercise, index) => (
                 <div
                   key={exercise.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+                  className="flex items-center justify-between p-4 bg-white rounded-xl card-shadow animate-in slide-up"
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div>
-                    <div className="font-medium text-gray-900">{exercise.name}</div>
-                    <div className="text-sm text-gray-500">{exercise.reps}</div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                      <span className="text-white font-bold">{index + 1}</span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-800">{exercise.name}</div>
+                      <div className="text-sm text-slate-500">{exercise.reps} reps</div>
+                    </div>
                   </div>
                   <button
                     onClick={() => removeExercise(exercise.id)}
-                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -83,10 +101,15 @@ export default function OnboardingPage() {
           </div>
         )}
 
+        {/* Start button */}
         <button
           onClick={handleStart}
           disabled={exercises.length === 0}
-          className="w-full py-4 bg-green-500 text-white text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-600 active:scale-[0.98] transition-all"
+          className={`w-full py-4 text-lg font-bold rounded-2xl transition-all duration-300 active:scale-[0.98] ${
+            exercises.length === 0
+              ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+              : 'bg-gradient-to-r from-violet-500 to-purple-600 text-white card-shadow hover:card-shadow-hover'
+          }`}
         >
           {exercises.length === 0 ? 'Add at least one exercise' : "Let's Go!"}
         </button>

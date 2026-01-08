@@ -14,10 +14,10 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-white rounded-3xl shadow-2xl p-6 max-w-sm w-full animate-in zoom-in duration-300">
         {children}
       </div>
     </div>

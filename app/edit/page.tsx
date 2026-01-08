@@ -57,44 +57,52 @@ export default function EditPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-4 border-violet-500 border-t-transparent animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-md mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => router.push('/')}
-            className="p-2 -ml-2 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-gray-900">Edit Routine</h1>
-          <div className="w-10" />
-        </div>
+    <div className="min-h-screen pb-8">
+      {/* Header */}
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700" />
 
-        <div className="mb-6">
-          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+        <div className="relative max-w-md mx-auto px-4 pt-6 pb-10">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => router.push('/')}
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <h1 className="text-2xl font-black text-white">Edit Routine</h1>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-md mx-auto px-4 -mt-4">
+        {/* Add exercise card */}
+        <div className="bg-white rounded-2xl p-5 card-shadow mb-6">
+          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4">
             Add new exercise
           </h2>
           <ExerciseForm onSave={addExercise} />
         </div>
 
+        {/* Exercise list */}
         <div>
-          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-3 px-1">
             Your exercises ({exercises.length})
           </h2>
           <div className="space-y-2">
-            {exercises.map((exercise) => (
+            {exercises.map((exercise, index) => (
               <div key={exercise.id}>
                 {editingId === exercise.id ? (
-                  <div className="p-4 bg-blue-50 rounded-xl border-2 border-blue-200">
+                  <div className="p-4 bg-violet-50 rounded-xl border-2 border-violet-200 animate-in zoom-in">
                     <ExerciseForm
                       exercise={exercise}
                       onSave={(name, reps) => updateExercise(exercise.id, name, reps)}
@@ -103,14 +111,20 @@ export default function EditPage() {
                     />
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-xl">
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">{exercise.name}</div>
-                      <div className="text-sm text-gray-500">{exercise.reps}</div>
+                  <div
+                    className="flex items-center gap-3 p-4 bg-white rounded-xl card-shadow animate-in slide-up"
+                    style={{ animationDelay: `${index * 30}ms` }}
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold">{index + 1}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-slate-800 truncate">{exercise.name}</div>
+                      <div className="text-sm text-slate-500">{exercise.reps} reps</div>
                     </div>
                     <button
                       onClick={() => setEditingId(exercise.id)}
-                      className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
+                      className="p-2 text-slate-400 hover:text-violet-500 hover:bg-violet-50 rounded-lg transition-colors"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -118,7 +132,7 @@ export default function EditPage() {
                     </button>
                     <button
                       onClick={() => removeExercise(exercise.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

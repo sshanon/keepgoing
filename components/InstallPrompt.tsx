@@ -13,17 +13,14 @@ export function InstallPrompt() {
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
       return;
     }
 
-    // Check if user dismissed before
     const dismissed = localStorage.getItem('install_prompt_dismissed');
     if (dismissed) {
       const dismissedTime = parseInt(dismissed);
-      // Show again after 7 days
       if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
         return;
       }
@@ -36,16 +33,13 @@ export function InstallPrompt() {
     };
 
     window.addEventListener('beforeinstallprompt', handler);
-
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   const handleInstall = async () => {
     if (!installPrompt) return;
-
     await installPrompt.prompt();
     const { outcome } = await installPrompt.userChoice;
-
     if (outcome === 'accepted') {
       setIsInstalled(true);
     }
@@ -61,25 +55,27 @@ export function InstallPrompt() {
   if (!isVisible || isInstalled) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg animate-in fade-in slide-in-from-bottom duration-300 z-50">
+    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 shadow-xl animate-in slide-in-from-bottom duration-300 z-50">
       <div className="max-w-md mx-auto flex items-center gap-4">
-        <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
-          <span className="text-2xl">🔥</span>
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+          <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900">Install KeepGoing</h3>
-          <p className="text-sm text-gray-500 truncate">Add to home screen for quick access</p>
+          <h3 className="font-bold text-slate-800">Install KeepGoing</h3>
+          <p className="text-sm text-slate-500 truncate">Add to home screen for quick access</p>
         </div>
         <div className="flex gap-2 flex-shrink-0">
           <button
             onClick={handleDismiss}
-            className="px-3 py-2 text-gray-500 text-sm font-medium"
+            className="px-3 py-2 text-slate-500 text-sm font-medium hover:text-slate-700"
           >
             Later
           </button>
           <button
             onClick={handleInstall}
-            className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 active:scale-95 transition-all"
+            className="px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all"
           >
             Install
           </button>

@@ -33,21 +33,21 @@ export function ExerciseForm({ exercise, onSave, onCancel, submitLabel = 'Add' }
           placeholder="Exercise name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-colors"
+          className="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50 focus:bg-white focus:border-violet-500 focus:outline-none transition-all text-slate-800 placeholder:text-slate-400"
         />
         <input
           type="text"
-          placeholder="Reps (e.g. 15)"
+          placeholder="Reps"
           value={reps}
           onChange={(e) => setReps(e.target.value)}
-          className="w-28 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-colors"
+          className="w-24 px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50 focus:bg-white focus:border-violet-500 focus:outline-none transition-all text-slate-800 placeholder:text-slate-400 text-center"
         />
       </div>
       <div className="flex gap-2">
         <button
           type="submit"
           disabled={!name.trim() || !reps.trim()}
-          className="flex-1 py-3 bg-blue-500 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 active:scale-[0.98] transition-all"
+          className="flex-1 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.98] transition-all"
         >
           {submitLabel}
         </button>
@@ -55,7 +55,7 @@ export function ExerciseForm({ exercise, onSave, onCancel, submitLabel = 'Add' }
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 active:scale-[0.98] transition-all"
+            className="px-5 py-3 bg-slate-100 text-slate-600 font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all"
           >
             Cancel
           </button>

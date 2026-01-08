@@ -8,7 +8,6 @@ import { getExerciseStreak, getOverallStreak, shouldPromptIncrease } from '@/lib
 import { ExerciseItem } from '@/components/ExerciseItem';
 import { Celebration } from '@/components/Celebration';
 import { StreakPromptModal } from '@/components/StreakPromptModal';
-import { StreakBadge } from '@/components/StreakBadge';
 
 export default function TodayPage() {
   const router = useRouter();
@@ -122,8 +121,8 @@ export default function TodayPage() {
 
   if (!mounted || !data || !todayLog) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-4 border-violet-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -132,63 +131,93 @@ export default function TodayPage() {
   const completedCount = todayLog.completed.length;
   const totalCount = data.exercises.length;
   const allDone = completedCount === totalCount;
+  const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-md mx-auto px-4 py-6">
-        <header className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Today</h1>
-            <p className="text-sm text-gray-500">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <StreakBadge streak={overallStreak} size="lg" />
+    <div className="min-h-screen pb-8">
+      {/* Header */}
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700" />
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        </div>
+
+        <div className="relative max-w-md mx-auto px-4 pt-8 pb-12">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-black text-white mb-1">Today</h1>
+              <p className="text-white/70 font-medium">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+              </p>
+            </div>
             <button
               onClick={() => router.push('/edit')}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </button>
           </div>
-        </header>
 
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium text-gray-600">
-              {completedCount} of {totalCount} done
+          {/* Streak display */}
+          {overallStreak > 0 && (
+            <div className="inline-flex items-center gap-3 px-5 py-3 bg-white/15 backdrop-blur-sm rounded-2xl">
+              <span className="text-3xl animate-pulse">🔥</span>
+              <div>
+                <div className="text-2xl font-black text-white">{overallStreak}</div>
+                <div className="text-xs text-white/70 font-medium uppercase tracking-wide">day streak</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Progress section */}
+      <div className="max-w-md mx-auto px-4 -mt-4">
+        <div className="bg-white rounded-2xl p-4 card-shadow mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-semibold text-slate-600">
+              {completedCount} of {totalCount} completed
             </span>
-            {allDone && <span className="text-sm text-green-600 font-medium">Complete!</span>}
+            {allDone && (
+              <span className="text-sm font-bold text-emerald-500 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                Complete!
+              </span>
+            )}
           </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-green-500 transition-all duration-300"
-              style={{ width: `${(completedCount / totalCount) * 100}%` }}
+              className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
+        {/* Exercise list */}
         <div className="space-y-3">
-          {data.exercises.map((exercise) => {
+          {data.exercises.map((exercise, index) => {
             const isCompleted = todayLog.completed.includes(exercise.id);
-            const streak = getExerciseStreak(
-              exercise.id,
-              data.logs,
-              today
-            );
+            const streak = getExerciseStreak(exercise.id, data.logs, today);
 
             return (
-              <ExerciseItem
+              <div
                 key={exercise.id}
-                exercise={exercise}
-                isCompleted={isCompleted}
-                streak={streak}
-                onToggle={() => toggleExercise(exercise.id)}
-              />
+                className="animate-in slide-up"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <ExerciseItem
+                  exercise={exercise}
+                  isCompleted={isCompleted}
+                  streak={streak}
+                  onToggle={() => toggleExercise(exercise.id)}
+                />
+              </div>
             );
           })}
         </div>
