@@ -2,6 +2,7 @@
 
 import { Exercise } from '@/lib/types';
 import { StreakBadge } from './StreakBadge';
+import { WeightsIcon, YogaIcon } from './ExerciseForm';
 
 interface ExerciseItemProps {
   exercise: Exercise;
@@ -11,6 +12,8 @@ interface ExerciseItemProps {
 }
 
 export function ExerciseItem({ exercise, isCompleted, streak, onToggle }: ExerciseItemProps) {
+  const IconComponent = exercise.type === 'yoga' ? YogaIcon : WeightsIcon;
+
   return (
     <button
       onClick={onToggle}
@@ -20,7 +23,7 @@ export function ExerciseItem({ exercise, isCompleted, streak, onToggle }: Exerci
           : 'bg-white card-shadow hover:card-shadow-hover'
       }`}
     >
-      <div className={`relative w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
+      <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
         isCompleted
           ? 'bg-white/25'
           : 'bg-gradient-to-br from-violet-500 to-purple-600'
@@ -30,7 +33,7 @@ export function ExerciseItem({ exercise, isCompleted, streak, onToggle }: Exerci
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         ) : (
-          <div className="w-3 h-3 rounded-full bg-white/90" />
+          <IconComponent className="w-5 h-5 text-white" />
         )}
       </div>
 

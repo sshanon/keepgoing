@@ -1,8 +1,11 @@
+export type ExerciseType = 'weights' | 'yoga';
+
 export interface Exercise {
   id: string;
   name: string;
   reps: string;
   order: number;
+  type?: ExerciseType;
 }
 
 export interface DayLog {

@@ -2,19 +2,20 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Exercise } from '@/lib/types';
+import { Exercise, ExerciseType } from '@/lib/types';
 import { loadData, saveData, generateId } from '@/lib/storage';
-import { ExerciseForm } from '@/components/ExerciseForm';
+import { ExerciseForm, WeightsIcon, YogaIcon } from '@/components/ExerciseForm';
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [exercises, setExercises] = useState<Exercise[]>([]);
 
-  const addExercise = (name: string, reps: string) => {
+  const addExercise = (name: string, reps: string, type: ExerciseType) => {
     const newExercise: Exercise = {
       id: generateId(),
       name,
       reps,
+      type,
       order: exercises.length,
     };
     setExercises([...exercises, newExercise]);
@@ -38,9 +39,8 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700" />
-        <div className="absolute inset-0 opacity-30">
+      <header className="relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
@@ -72,31 +72,34 @@ export default function OnboardingPage() {
               Your Routine ({exercises.length})
             </h3>
             <div className="space-y-2">
-              {exercises.map((exercise, index) => (
-                <div
-                  key={exercise.id}
-                  className="flex items-center justify-between p-4 bg-white rounded-xl card-shadow animate-in slide-up"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                      <span className="text-white font-bold">{index + 1}</span>
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-800">{exercise.name}</div>
-                      <div className="text-sm text-slate-500">{exercise.reps} reps</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => removeExercise(exercise.id)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+              {exercises.map((exercise, index) => {
+                const IconComponent = exercise.type === 'yoga' ? YogaIcon : WeightsIcon;
+                return (
+                  <div
+                    key={exercise.id}
+                    className="flex items-center justify-between p-4 bg-white rounded-xl card-shadow animate-in slide-up"
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                        <IconComponent className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-slate-800">{exercise.name}</div>
+                        <div className="text-sm text-slate-500">{exercise.reps} reps</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeExercise(exercise.id)}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
