@@ -9,7 +9,7 @@ interface CelebrationProps {
 }
 
 function Confetti() {
-  const colors = ['#8b5cf6', '#0ea5e9', '#22c55e', '#f97316', '#ec4899'];
+  const colors = ['#8b5cf6', '#0ea5e9', '#a78bfa', '#f97316', '#ec4899', '#6366f1'];
   const confetti = Array.from({ length: 50 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,

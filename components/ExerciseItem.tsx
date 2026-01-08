@@ -16,13 +16,13 @@ export function ExerciseItem({ exercise, isCompleted, streak, onToggle }: Exerci
       onClick={onToggle}
       className={`w-full flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 active:scale-[0.98] ${
         isCompleted
-          ? 'bg-gradient-to-r from-emerald-500 to-green-500 card-shadow-hover'
+          ? 'bg-gradient-to-r from-violet-500 to-indigo-500 card-shadow-hover'
           : 'bg-white card-shadow hover:card-shadow-hover'
       }`}
     >
       <div className={`relative w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
         isCompleted
-          ? 'bg-white/20'
+          ? 'bg-white/25'
           : 'bg-gradient-to-br from-violet-500 to-purple-600'
       }`}>
         {isCompleted ? (
@@ -41,7 +41,7 @@ export function ExerciseItem({ exercise, isCompleted, streak, onToggle }: Exerci
           {exercise.name}
         </div>
         <div className={`text-sm font-medium transition-colors duration-300 ${
-          isCompleted ? 'text-white/80' : 'text-slate-500'
+          isCompleted ? 'text-white/75' : 'text-slate-500'
         }`}>
           {exercise.reps} reps
         </div>
