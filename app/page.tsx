@@ -9,15 +9,45 @@ import { ExerciseItem } from '@/components/ExerciseItem';
 import { Celebration } from '@/components/Celebration';
 import { StreakPromptModal } from '@/components/StreakPromptModal';
 
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+}
+
+function getDateLabel(dateStr: string, today: string): string {
+  if (dateStr === today) return 'Today';
+
+  const todayDate = new Date(today + 'T00:00:00');
+  const yesterday = new Date(todayDate);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+  if (dateStr === yesterdayStr) return 'Yesterday';
+
+  return formatDate(dateStr);
+}
+
+function addDays(dateStr: string, days: number): string {
+  const date = new Date(dateStr + 'T00:00:00');
+  date.setDate(date.getDate() + days);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export default function TodayPage() {
   const router = useRouter();
   const [data, setData] = useState<AppData | null>(null);
-  const [todayLog, setTodayLog] = useState<DayLog | null>(null);
+  const [viewDate, setViewDate] = useState<string>('');
+  const [dayLog, setDayLog] = useState<DayLog | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [streakPrompt, setStreakPrompt] = useState<{ exercise: Exercise; streak: number } | null>(null);
   const [mounted, setMounted] = useState(false);
 
   const today = getToday();
+  const isToday = viewDate === today;
+  const canGoForward = viewDate < today;
 
   useEffect(() => {
     setMounted(true);
@@ -29,42 +59,48 @@ export default function TodayPage() {
     }
 
     setData(appData);
+    setViewDate(getToday());
+  }, [router]);
 
-    const existingLog = appData.logs.find(log => log.date === today);
-    setTodayLog(existingLog || { date: today, completed: [] });
-  }, [router, today]);
+  useEffect(() => {
+    if (!data || !viewDate) return;
 
-  const saveAndUpdate = useCallback((newData: AppData, newTodayLog: DayLog) => {
-    const logIndex = newData.logs.findIndex(log => log.date === today);
+    const existingLog = data.logs.find(log => log.date === viewDate);
+    setDayLog(existingLog || { date: viewDate, completed: [] });
+  }, [data, viewDate]);
+
+  const saveAndUpdate = useCallback((newData: AppData, newDayLog: DayLog) => {
+    const logIndex = newData.logs.findIndex(log => log.date === viewDate);
     if (logIndex >= 0) {
-      newData.logs[logIndex] = newTodayLog;
+      newData.logs[logIndex] = newDayLog;
     } else {
-      newData.logs.push(newTodayLog);
+      newData.logs.push(newDayLog);
     }
     saveData(newData);
     setData({ ...newData });
-    setTodayLog({ ...newTodayLog });
-  }, [today]);
+    setDayLog({ ...newDayLog });
+  }, [viewDate]);
 
   const toggleExercise = useCallback((exerciseId: string) => {
-    if (!data || !todayLog) return;
+    if (!data || !dayLog) return;
 
-    const isCompleted = todayLog.completed.includes(exerciseId);
+    const isCompleted = dayLog.completed.includes(exerciseId);
     let newCompleted: string[];
 
     if (isCompleted) {
-      newCompleted = todayLog.completed.filter(id => id !== exerciseId);
+      newCompleted = dayLog.completed.filter(id => id !== exerciseId);
     } else {
-      newCompleted = [...todayLog.completed, exerciseId];
+      newCompleted = [...dayLog.completed, exerciseId];
     }
 
-    const newTodayLog = { ...todayLog, completed: newCompleted };
-    saveAndUpdate(data, newTodayLog);
+    const newDayLog = { ...dayLog, completed: newCompleted };
+    saveAndUpdate(data, newDayLog);
 
-    if (!isCompleted) {
+    // Only show celebration and streak prompts for today
+    if (isToday && !isCompleted) {
       const exercise = data.exercises.find(e => e.id === exerciseId);
       if (exercise) {
-        const streak = getExerciseStreak(exerciseId, [...data.logs.filter(l => l.date !== today), newTodayLog], today);
+        const streak = getExerciseStreak(exerciseId, [...data.logs.filter(l => l.date !== today), newDayLog], today);
         const lastPrompted = data.lastStreakPrompt[exerciseId];
 
         if (shouldPromptIncrease(exerciseId, streak, lastPrompted)) {
@@ -77,7 +113,7 @@ export default function TodayPage() {
         setShowCelebration(true);
       }
     }
-  }, [data, todayLog, today, saveAndUpdate]);
+  }, [data, dayLog, viewDate, today, isToday, saveAndUpdate]);
 
   const handleAcceptIncrease = useCallback(() => {
     if (!data || !streakPrompt) return;
@@ -119,7 +155,21 @@ export default function TodayPage() {
     setStreakPrompt(null);
   }, [data, streakPrompt]);
 
-  if (!mounted || !data || !todayLog) {
+  const goToPreviousDay = () => {
+    setViewDate(addDays(viewDate, -1));
+  };
+
+  const goToNextDay = () => {
+    if (canGoForward) {
+      setViewDate(addDays(viewDate, 1));
+    }
+  };
+
+  const goToToday = () => {
+    setViewDate(today);
+  };
+
+  if (!mounted || !data || !dayLog || !viewDate) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-violet-500 border-t-transparent animate-spin" />
@@ -128,7 +178,7 @@ export default function TodayPage() {
   }
 
   const overallStreak = getOverallStreak(data.exercises, data.logs, today);
-  const completedCount = todayLog.completed.length;
+  const completedCount = dayLog.completed.length;
   const totalCount = data.exercises.length;
   const allDone = completedCount === totalCount;
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
@@ -143,12 +193,42 @@ export default function TodayPage() {
         </div>
 
         <div className="relative max-w-md mx-auto px-4 pt-8 pb-8">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-black text-white mb-1">Today</h1>
-              <p className="text-white/70 font-medium">
-                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+              {/* Date navigation */}
+              <div className="flex items-center gap-2 mb-1">
+                <button
+                  onClick={goToPreviousDay}
+                  className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <h1 className="text-2xl font-black text-white">
+                  {getDateLabel(viewDate, today)}
+                </h1>
+                <button
+                  onClick={goToNextDay}
+                  disabled={!canGoForward}
+                  className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors disabled:opacity-30 disabled:hover:bg-white/10"
+                >
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-white/70 font-medium text-sm">
+                {formatDate(viewDate)}
               </p>
+              {!isToday && (
+                <button
+                  onClick={goToToday}
+                  className="mt-2 text-xs font-semibold text-white/90 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition-colors"
+                >
+                  Back to Today
+                </button>
+              )}
             </div>
             <button
               onClick={() => router.push('/edit')}
@@ -161,8 +241,8 @@ export default function TodayPage() {
             </button>
           </div>
 
-          {/* Streak display */}
-          {overallStreak > 0 && (
+          {/* Streak display - only show when viewing today */}
+          {isToday && overallStreak > 0 && (
             <div className="inline-flex items-center gap-3 px-5 py-3 bg-white/15 backdrop-blur-sm rounded-2xl">
               <span className="text-3xl animate-pulse">🔥</span>
               <div>
@@ -201,7 +281,8 @@ export default function TodayPage() {
         {/* Exercise list */}
         <div className="space-y-3">
           {data.exercises.map((exercise, index) => {
-            const isCompleted = todayLog.completed.includes(exercise.id);
+            const isCompleted = dayLog.completed.includes(exercise.id);
+            // Show streak as of today, not the viewed date
             const streak = getExerciseStreak(exercise.id, data.logs, today);
 
             return (
@@ -213,13 +294,20 @@ export default function TodayPage() {
                 <ExerciseItem
                   exercise={exercise}
                   isCompleted={isCompleted}
-                  streak={streak}
+                  streak={isToday ? streak : 0}
                   onToggle={() => toggleExercise(exercise.id)}
                 />
               </div>
             );
           })}
         </div>
+
+        {/* Past day notice */}
+        {!isToday && (
+          <p className="text-center text-sm text-slate-500 mt-6">
+            Viewing {getDateLabel(viewDate, today).toLowerCase()}. Tap exercises to edit.
+          </p>
+        )}
       </div>
 
       <Celebration
