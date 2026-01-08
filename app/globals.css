@@ -62,3 +62,12 @@ button, a {
 .zoom-in {
   animation-name: zoom-in;
 }
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.slide-in-from-bottom {
+  animation-name: slide-in-from-bottom;
+}
