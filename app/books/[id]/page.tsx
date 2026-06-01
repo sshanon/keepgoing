@@ -101,7 +101,7 @@ export default function BookDetailPage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
-        <div className="relative max-w-md mx-auto px-4 pt-8 pb-14">
+        <div className="relative max-w-md mx-auto px-4 pt-8 pb-6">
           <button
             onClick={() => router.push('/books')}
             className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors mb-4 inline-flex"
@@ -123,7 +123,7 @@ export default function BookDetailPage() {
         </div>
       </header>
 
-      <div className="max-w-md mx-auto px-4 -mt-6 space-y-4">
+      <div className="max-w-md mx-auto px-4 pt-6 space-y-4">
         {/* Progress card */}
         <div className="bg-white rounded-2xl p-5 card-shadow">
           <div className="flex items-end justify-between mb-4">

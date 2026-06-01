@@ -12,14 +12,14 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
-        <div className="relative max-w-md mx-auto px-4 pt-14 pb-16 text-center">
+        <div className="relative max-w-md mx-auto px-4 pt-14 pb-8 text-center">
           <div className="text-5xl mb-4">🎯</div>
           <h1 className="text-3xl font-black text-white mb-2">KeepGoing</h1>
           <p className="text-white/70 font-medium">What are you working on today?</p>
         </div>
       </header>
 
-      <div className="max-w-md mx-auto px-4 -mt-6 pb-8 space-y-4">
+      <div className="max-w-md mx-auto px-4 pt-6 pb-8 space-y-4">
         <button
           onClick={() => router.push('/sports')}
           className="w-full text-left bg-white rounded-2xl p-6 card-shadow hover:card-shadow-hover transition-all duration-200 active:scale-[0.98]"

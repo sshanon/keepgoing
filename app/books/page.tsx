@@ -33,7 +33,7 @@ export default function BooksPage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
-        <div className="relative max-w-md mx-auto px-4 pt-8 pb-12">
+        <div className="relative max-w-md mx-auto px-4 pt-8 pb-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/')}
@@ -48,7 +48,7 @@ export default function BooksPage() {
         </div>
       </header>
 
-      <div className="max-w-md mx-auto px-4 -mt-6 space-y-4">
+      <div className="max-w-md mx-auto px-4 pt-6 space-y-4">
         {books.map(book => {
           const currentPage = getCurrentPage(book);
           const pct = getPercentDone(book, currentPage);
