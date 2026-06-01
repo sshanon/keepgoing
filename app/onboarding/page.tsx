@@ -33,7 +33,7 @@ export default function OnboardingPage() {
     data.onboarded = true;
     saveData(data);
 
-    router.push('/');
+    router.push('/sports');
   };
 
   return (
