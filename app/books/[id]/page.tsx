@@ -79,7 +79,7 @@ export default function BookDetailPage() {
   if (!mounted || !book) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-4 border-teal-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -99,7 +99,7 @@ export default function BookDetailPage() {
     <div className="min-h-screen pb-8">
       {/* Header */}
       <header className="relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-500 via-cyan-500 to-sky-500 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
@@ -142,7 +142,7 @@ export default function BookDetailPage() {
           </div>
           <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -171,7 +171,7 @@ export default function BookDetailPage() {
                 <div className="text-sm text-slate-500">
                   Read to page {todayLog.pageNumber}
                   {onTrack
-                    ? <span className="ml-1.5 text-amber-600 font-semibold">· On track!</span>
+                    ? <span className="ml-1.5 text-teal-600 font-semibold">· On track!</span>
                     : <span className="ml-1.5 text-slate-400">· Goal was p.{targetPageToday}</span>
                   }
                 </div>
@@ -182,8 +182,8 @@ export default function BookDetailPage() {
               )}
             </div>
             {loggedToday && (
-              <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 ml-3">
-                <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0 ml-3">
+                <svg className="w-5 h-5 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -191,7 +191,7 @@ export default function BookDetailPage() {
           </div>
           <button
             onClick={openReadModal}
-            className="w-full py-3.5 font-bold rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white transition-all active:scale-[0.98]"
+            className="w-full py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white transition-all active:scale-[0.98]"
           >
             {loggedToday ? 'Update today\'s reading' : 'Mark today\'s reading'}
           </button>
@@ -206,7 +206,7 @@ export default function BookDetailPage() {
             </div>
             <button
               onClick={openPaceModal}
-              className="px-4 py-2 text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 rounded-xl transition-colors"
+              className="px-4 py-2 text-sm font-bold text-teal-700 bg-teal-100 hover:bg-teal-200 rounded-xl transition-colors"
             >
               Change
             </button>
@@ -234,7 +234,7 @@ export default function BookDetailPage() {
               onChange={e => setPageInput(e.target.value)}
               min={book.startPage + 1}
               max={book.totalPages}
-              className="w-full text-3xl font-black text-center p-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-amber-400 mb-5"
+              className="w-full text-3xl font-black text-center p-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-teal-400 mb-5"
               autoFocus
             />
             <div className="flex gap-3">
@@ -246,7 +246,7 @@ export default function BookDetailPage() {
               </button>
               <button
                 onClick={handleMarkRead}
-                className="flex-1 py-3.5 font-bold rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white"
+                className="flex-1 py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white"
               >
                 Save
               </button>
@@ -275,7 +275,7 @@ export default function BookDetailPage() {
                 value={paceInput}
                 onChange={e => setPaceInput(e.target.value)}
                 min={1}
-                className="flex-1 text-3xl font-black text-center p-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-amber-400"
+                className="flex-1 text-3xl font-black text-center p-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-teal-400"
                 autoFocus
               />
               <span className="text-slate-500 font-semibold whitespace-nowrap">pages / day</span>
@@ -289,7 +289,7 @@ export default function BookDetailPage() {
               </button>
               <button
                 onClick={handleChangePace}
-                className="flex-1 py-3.5 font-bold rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white"
+                className="flex-1 py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white"
               >
                 Save
               </button>

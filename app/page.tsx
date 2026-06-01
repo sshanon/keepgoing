@@ -43,7 +43,7 @@ export default function LandingPage() {
           className="w-full text-left bg-white rounded-2xl p-6 card-shadow hover:card-shadow-hover transition-all duration-200 active:scale-[0.98]"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-2xl flex-shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-2xl flex-shrink-0">
               📚
             </div>
             <div className="flex-1">

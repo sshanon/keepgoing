@@ -21,7 +21,7 @@ export default function BooksPage() {
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-4 border-teal-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -29,7 +29,7 @@ export default function BooksPage() {
   return (
     <div className="min-h-screen pb-8">
       <header className="relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-500 via-cyan-500 to-sky-500 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         </div>
@@ -69,7 +69,7 @@ export default function BooksPage() {
                   <p className="text-sm text-slate-500 mt-0.5">Page {currentPage} of {book.totalPages}</p>
                 </div>
                 {loggedToday && (
-                  <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-full flex-shrink-0">
+                  <span className="text-xs font-bold text-teal-700 bg-teal-100 px-2 py-1 rounded-full flex-shrink-0">
                     Read today ✓
                   </span>
                 )}
@@ -77,7 +77,7 @@ export default function BooksPage() {
 
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
                 <div
-                  className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full transition-all duration-500"
                   style={{ width: `${pct}%` }}
                 />
               </div>
