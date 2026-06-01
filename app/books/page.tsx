@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookGoal } from '@/lib/types';
 import { loadData, getToday } from '@/lib/storage';
-import { getCurrentPage, getBookStreak, getPercentDone, getDaysLeft } from '@/lib/bookUtils';
+import { getCurrentPage, getBookStreak, getPercentDone, getDaysLeft, getFinishDate } from '@/lib/bookUtils';
 
 export default function BooksPage() {
   const router = useRouter();
@@ -53,6 +53,7 @@ export default function BooksPage() {
           const currentPage = getCurrentPage(book);
           const pct = getPercentDone(book, currentPage);
           const daysLeft = getDaysLeft(book, currentPage);
+          const finishDate = getFinishDate(book, currentPage, today);
           const streak = getBookStreak(book.logs, today);
           const loggedToday = book.logs.some(l => l.date === today);
 
@@ -89,7 +90,7 @@ export default function BooksPage() {
                       🔥 <span>{streak}d</span>
                     </span>
                   )}
-                  <span>{daysLeft} days left</span>
+                  <span>{daysLeft}d · {finishDate}</span>
                 </div>
               </div>
             </button>

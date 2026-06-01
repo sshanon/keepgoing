@@ -35,6 +35,13 @@ export function getDaysLeft(book: BookGoal, currentPage: number): number {
   return Math.ceil(pagesLeft / book.currentPace);
 }
 
+export function getFinishDate(book: BookGoal, currentPage: number, today: string): string {
+  const daysLeft = getDaysLeft(book, currentPage);
+  const date = new Date(today + 'T00:00:00');
+  date.setDate(date.getDate() + daysLeft);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 export function getTodayTargetPage(book: BookGoal, today: string): number {
   const start = new Date(book.startDate + 'T00:00:00');
   const now = new Date(today + 'T00:00:00');

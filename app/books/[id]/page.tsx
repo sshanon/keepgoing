@@ -9,6 +9,7 @@ import {
   getBookStreak,
   getPercentDone,
   getDaysLeft,
+  getFinishDate,
   getTodayTargetPage,
 } from '@/lib/bookUtils';
 
@@ -87,6 +88,7 @@ export default function BookDetailPage() {
   const pct = getPercentDone(book, currentPage);
   const pagesLeft = book.totalPages - currentPage;
   const daysLeft = getDaysLeft(book, currentPage);
+  const finishDate = getFinishDate(book, currentPage, today);
   const streak = getBookStreak(book.logs, today);
   const targetPageToday = getTodayTargetPage(book, today);
   const todayLog = book.logs.find(l => l.date === today);
@@ -151,7 +153,7 @@ export default function BookDetailPage() {
           <div className="grid grid-cols-2 gap-3">
             <div className="text-center p-4 bg-slate-50 rounded-xl">
               <div className="text-3xl font-black text-slate-800">{daysLeft}</div>
-              <div className="text-xs text-slate-500 font-medium mt-1">days to finish</div>
+              <div className="text-xs text-slate-500 font-medium mt-1">days · {finishDate}</div>
             </div>
             <div className="text-center p-4 bg-slate-50 rounded-xl">
               <div className="text-3xl font-black text-slate-800">{book.currentPace}</div>
