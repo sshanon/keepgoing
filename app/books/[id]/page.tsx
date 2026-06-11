@@ -23,6 +23,7 @@ export default function BookDetailPage() {
   const [showReadModal, setShowReadModal] = useState(false);
   const [showPaceModal, setShowPaceModal] = useState(false);
   const [showPagesModal, setShowPagesModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [pageInput, setPageInput] = useState('');
   const [paceInput, setPaceInput] = useState('');
   const [pagesInput, setPagesInput] = useState('');
@@ -90,6 +91,14 @@ export default function BookDetailPage() {
     if (isNaN(pages) || pages < 1) return;
     persistBook({ ...book, totalPages: pages });
     setShowPagesModal(false);
+  };
+
+  const handleDelete = () => {
+    if (!book) return;
+    const data = loadData();
+    data.bookGoals = data.bookGoals.filter(b => b.id !== book.id);
+    saveData(data);
+    router.push('/books');
   };
 
   const handleMarkDone = () => {
@@ -266,6 +275,36 @@ export default function BookDetailPage() {
           >
             Mark as done
           </button>
+        )}
+
+        {/* Delete */}
+        {!confirmDelete ? (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="w-full py-3.5 font-bold rounded-xl text-red-400 hover:bg-red-50 transition-colors active:scale-[0.98]"
+          >
+            Delete book
+          </button>
+        ) : (
+          <div className="bg-red-50 rounded-2xl p-4">
+            <p className="text-sm font-semibold text-red-700 text-center mb-3">
+              Delete &ldquo;{book.title}&rdquo;? This can&apos;t be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 py-3 font-bold rounded-xl bg-white text-slate-600 border border-slate-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 py-3 font-bold rounded-xl bg-red-500 text-white"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
