@@ -25,6 +25,7 @@ export interface BookGoal {
   startPage: number;
   startDate: string; // "YYYY-MM-DD"
   currentPace: number; // pages per day
+  completed?: boolean;
   logs: BookLog[];
 }
 

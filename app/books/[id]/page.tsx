@@ -22,8 +22,10 @@ export default function BookDetailPage() {
   const [mounted, setMounted] = useState(false);
   const [showReadModal, setShowReadModal] = useState(false);
   const [showPaceModal, setShowPaceModal] = useState(false);
+  const [showPagesModal, setShowPagesModal] = useState(false);
   const [pageInput, setPageInput] = useState('');
   const [paceInput, setPaceInput] = useState('');
+  const [pagesInput, setPagesInput] = useState('');
 
   const today = getToday();
 
@@ -76,6 +78,26 @@ export default function BookDetailPage() {
     setShowPaceModal(false);
   };
 
+  const openPagesModal = () => {
+    if (!book) return;
+    setPagesInput(String(book.totalPages));
+    setShowPagesModal(true);
+  };
+
+  const handleChangePages = () => {
+    if (!book) return;
+    const pages = parseInt(pagesInput);
+    if (isNaN(pages) || pages < 1) return;
+    persistBook({ ...book, totalPages: pages });
+    setShowPagesModal(false);
+  };
+
+  const handleMarkDone = () => {
+    if (!book) return;
+    const newLogs = [...book.logs.filter(l => l.date !== today), { date: today, pageNumber: book.totalPages }];
+    persistBook({ ...book, completed: true, logs: newLogs });
+  };
+
   if (!mounted || !book) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -85,7 +107,7 @@ export default function BookDetailPage() {
   }
 
   const currentPage = getCurrentPage(book);
-  const pct = getPercentDone(book, currentPage);
+  const pct = book.completed ? 100 : getPercentDone(book, currentPage);
   const pagesLeft = book.totalPages - currentPage;
   const daysLeft = getDaysLeft(book, currentPage);
   const finishDate = getFinishDate(book, currentPage, today);
@@ -113,7 +135,12 @@ export default function BookDetailPage() {
             </svg>
           </button>
           <h1 className="text-xl font-black text-white leading-snug mb-3">{book.title}</h1>
-          {streak > 0 && (
+          {book.completed ? (
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/15 backdrop-blur-sm rounded-2xl">
+              <span className="text-xl">🎉</span>
+              <span className="font-bold text-white">Completed!</span>
+            </div>
+          ) : streak > 0 ? (
             <div className="inline-flex items-center gap-3 px-4 py-2.5 bg-white/15 backdrop-blur-sm rounded-2xl">
               <span className="text-2xl animate-pulse">🔥</span>
               <div>
@@ -121,7 +148,7 @@ export default function BookDetailPage() {
                 <div className="text-xs text-white/70 font-medium uppercase tracking-wide">day streak</div>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </header>
 
@@ -137,7 +164,9 @@ export default function BookDetailPage() {
               <div className="text-base font-bold text-slate-700">
                 p.{currentPage} <span className="text-slate-400 font-normal">/ {book.totalPages}</span>
               </div>
-              <div className="text-sm text-slate-500">{pagesLeft} pages left</div>
+              <div className="text-sm text-slate-500">
+                {book.completed ? 'finished!' : `${pagesLeft} pages left`}
+              </div>
             </div>
           </div>
           <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -149,57 +178,61 @@ export default function BookDetailPage() {
         </div>
 
         {/* Stats card */}
-        <div className="bg-white rounded-2xl p-5 card-shadow">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="text-center p-4 bg-slate-50 rounded-xl">
-              <div className="text-3xl font-black text-slate-800">{daysLeft}</div>
-              <div className="text-xs text-slate-500 font-medium mt-1">days · {finishDate}</div>
-            </div>
-            <div className="text-center p-4 bg-slate-50 rounded-xl">
-              <div className="text-3xl font-black text-slate-800">{book.currentPace}</div>
-              <div className="text-xs text-slate-500 font-medium mt-1">pages / day</div>
+        {!book.completed && (
+          <div className="bg-white rounded-2xl p-5 card-shadow">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center p-4 bg-slate-50 rounded-xl">
+                <div className="text-3xl font-black text-slate-800">{daysLeft}</div>
+                <div className="text-xs text-slate-500 font-medium mt-1">days · {finishDate}</div>
+              </div>
+              <div className="text-center p-4 bg-slate-50 rounded-xl">
+                <div className="text-3xl font-black text-slate-800">{book.currentPace}</div>
+                <div className="text-xs text-slate-500 font-medium mt-1">pages / day</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Today's reading card */}
-        <div className="bg-white rounded-2xl p-5 card-shadow">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="font-bold text-slate-800 mb-0.5">Today&apos;s reading</div>
-              {loggedToday ? (
-                <div className="text-sm text-slate-500">
-                  Read to page {todayLog.pageNumber}
-                  {onTrack
-                    ? <span className="ml-1.5 text-teal-600 font-semibold">· On track!</span>
-                    : <span className="ml-1.5 text-slate-400">· Goal was p.{targetPageToday}</span>
-                  }
-                </div>
-              ) : (
-                <div className="text-sm text-slate-500">
-                  Goal: reach page <span className="font-semibold text-slate-700">{targetPageToday}</span>
+        {/* Today's reading card — hidden when completed */}
+        {!book.completed && (
+          <div className="bg-white rounded-2xl p-5 card-shadow">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <div className="font-bold text-slate-800 mb-0.5">Today&apos;s reading</div>
+                {loggedToday ? (
+                  <div className="text-sm text-slate-500">
+                    Read to page {todayLog.pageNumber}
+                    {onTrack
+                      ? <span className="ml-1.5 text-teal-600 font-semibold">· On track!</span>
+                      : <span className="ml-1.5 text-slate-400">· Goal was p.{targetPageToday}</span>
+                    }
+                  </div>
+                ) : (
+                  <div className="text-sm text-slate-500">
+                    Goal: reach page <span className="font-semibold text-slate-700">{targetPageToday}</span>
+                  </div>
+                )}
+              </div>
+              {loggedToday && (
+                <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0 ml-3">
+                  <svg className="w-5 h-5 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
                 </div>
               )}
             </div>
-            {loggedToday && (
-              <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0 ml-3">
-                <svg className="w-5 h-5 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-            )}
+            <button
+              onClick={openReadModal}
+              className="w-full py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white transition-all active:scale-[0.98]"
+            >
+              {loggedToday ? 'Update today\'s reading' : 'Mark today\'s reading'}
+            </button>
           </div>
-          <button
-            onClick={openReadModal}
-            className="w-full py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white transition-all active:scale-[0.98]"
-          >
-            {loggedToday ? 'Update today\'s reading' : 'Mark today\'s reading'}
-          </button>
-        </div>
+        )}
 
-        {/* Pace card */}
-        <div className="bg-white rounded-2xl p-5 card-shadow">
-          <div className="flex items-center justify-between">
+        {/* Settings card */}
+        <div className="bg-white rounded-2xl p-5 card-shadow divide-y divide-slate-100">
+          <div className="flex items-center justify-between pb-4">
             <div>
               <div className="font-bold text-slate-800">Reading pace</div>
               <div className="text-sm text-slate-500 mt-0.5">{book.currentPace} pages per day</div>
@@ -211,7 +244,29 @@ export default function BookDetailPage() {
               Change
             </button>
           </div>
+          <div className="flex items-center justify-between pt-4">
+            <div>
+              <div className="font-bold text-slate-800">Total pages</div>
+              <div className="text-sm text-slate-500 mt-0.5">{book.totalPages} pages</div>
+            </div>
+            <button
+              onClick={openPagesModal}
+              className="px-4 py-2 text-sm font-bold text-teal-700 bg-teal-100 hover:bg-teal-200 rounded-xl transition-colors"
+            >
+              Change
+            </button>
+          </div>
         </div>
+
+        {/* Mark as done */}
+        {!book.completed && (
+          <button
+            onClick={handleMarkDone}
+            className="w-full py-3.5 font-bold rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors active:scale-[0.98]"
+          >
+            Mark as done
+          </button>
+        )}
       </div>
 
       {/* Mark read modal */}
@@ -266,9 +321,7 @@ export default function BookDetailPage() {
             onClick={e => e.stopPropagation()}
           >
             <h3 className="text-lg font-black text-slate-800 mb-1">Change reading pace</h3>
-            <p className="text-sm text-slate-500 mb-5">
-              Updates days-to-finish based on your current position
-            </p>
+            <p className="text-sm text-slate-500 mb-5">Updates days-to-finish based on your current position</p>
             <div className="flex items-center gap-3 mb-5">
               <input
                 type="number"
@@ -289,6 +342,47 @@ export default function BookDetailPage() {
               </button>
               <button
                 onClick={handleChangePace}
+                className="flex-1 py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Change total pages modal */}
+      {showPagesModal && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-end justify-center z-50 p-4"
+          onClick={() => setShowPagesModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 w-full max-w-md animate-in slide-up"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-black text-slate-800 mb-1">Edit total pages</h3>
+            <p className="text-sm text-slate-500 mb-5">Updates progress and days-to-finish</p>
+            <div className="flex items-center gap-3 mb-5">
+              <input
+                type="number"
+                value={pagesInput}
+                onChange={e => setPagesInput(e.target.value)}
+                min={1}
+                className="flex-1 text-3xl font-black text-center p-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-teal-400"
+                autoFocus
+              />
+              <span className="text-slate-500 font-semibold whitespace-nowrap">pages</span>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowPagesModal(false)}
+                className="flex-1 py-3.5 font-bold rounded-xl bg-slate-100 text-slate-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleChangePages}
                 className="flex-1 py-3.5 font-bold rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white"
               >
                 Save

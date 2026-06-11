@@ -7,7 +7,7 @@ const BOOK_CATALOG: Omit<BookGoal, 'logs'>[] = [
   {
     id: 'construction-mgmt-jumpstart',
     title: 'Construction Management Jumpstart',
-    totalPages: 484,
+    totalPages: 432,
     startPage: 50,
     startDate: '2026-06-01',
     currentPace: 10,
@@ -30,13 +30,20 @@ export function loadData(): AppData {
       data = { ...DEFAULT_APP_DATA };
     }
 
-    // Ensure every catalog book exists (preserves existing logs and pace changes)
+    // Seed catalog books for new installs; never overwrite user edits
     let changed = false;
     for (const bookDef of BOOK_CATALOG) {
       if (!data.bookGoals.find(b => b.id === bookDef.id)) {
         data.bookGoals.push({ ...bookDef, logs: [] });
         changed = true;
       }
+    }
+
+    // One-time migration: fix Construction Management Jumpstart page count
+    const cmj = data.bookGoals.find(b => b.id === 'construction-mgmt-jumpstart');
+    if (cmj && cmj.totalPages === 484) {
+      cmj.totalPages = 432;
+      changed = true;
     }
 
     if (changed) {
