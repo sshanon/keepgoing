@@ -29,12 +29,25 @@ export interface BookGoal {
   logs: BookLog[];
 }
 
+export type HandstandResult = 'wall' | 'moment' | 'balance';
+
+export interface HandstandAttempt {
+  id: string;
+  result: HandstandResult;
+}
+
+export interface HandstandLog {
+  date: string; // "YYYY-MM-DD"
+  attempts: HandstandAttempt[];
+}
+
 export interface AppData {
   exercises: Exercise[];
   logs: DayLog[];
   onboarded: boolean;
   lastStreakPrompt: Record<string, number>; // exerciseId -> streak when last prompted
   bookGoals: BookGoal[];
+  handstandLogs: HandstandLog[];
 }
 
 export const DEFAULT_APP_DATA: AppData = {
@@ -43,4 +56,5 @@ export const DEFAULT_APP_DATA: AppData = {
   onboarded: false,
   lastStreakPrompt: {},
   bookGoals: [],
+  handstandLogs: [],
 };

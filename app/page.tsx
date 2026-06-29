@@ -55,6 +55,24 @@ export default function LandingPage() {
             </svg>
           </div>
         </button>
+
+        <button
+          onClick={() => router.push('/handstand')}
+          className="w-full text-left bg-white rounded-2xl p-6 card-shadow hover:card-shadow-hover transition-all duration-200 active:scale-[0.98]"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-2xl flex-shrink-0">
+              🤸
+            </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-black text-slate-800">Handstand</h2>
+              <p className="text-sm text-slate-500 mt-0.5">100-try challenge</p>
+            </div>
+            <svg className="w-5 h-5 text-slate-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </button>
       </div>
     </div>
   );

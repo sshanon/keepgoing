@@ -26,6 +26,7 @@ export function loadData(): AppData {
     if (stored) {
       data = JSON.parse(stored) as AppData;
       if (!data.bookGoals) data.bookGoals = [];
+      if (!data.handstandLogs) data.handstandLogs = [];
     } else {
       data = { ...DEFAULT_APP_DATA };
     }
