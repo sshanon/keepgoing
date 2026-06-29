@@ -29,7 +29,7 @@ export interface BookGoal {
   logs: BookLog[];
 }
 
-export type HandstandResult = 'wall' | 'moment' | 'balance';
+export type HandstandResult = 'wall' | 'free' | 'moment' | 'balance';
 
 export interface HandstandAttempt {
   id: string;

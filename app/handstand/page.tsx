@@ -28,6 +28,14 @@ const RESULT_CONFIG: Record<HandstandResult, {
     btnBorder: 'border-red-200',
     btnText: 'text-red-700',
   },
+  free: {
+    label: 'Fell free',
+    emoji: '💨',
+    dotColor: 'bg-sky-300',
+    btnBg: 'bg-sky-50 hover:bg-sky-100 active:bg-sky-200',
+    btnBorder: 'border-sky-200',
+    btnText: 'text-sky-700',
+  },
   moment: {
     label: 'Held a sec',
     emoji: '⚡',
@@ -227,6 +235,7 @@ export default function HandstandPage() {
       date,
       label: new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'narrow' }),
       wall: log.attempts.filter(a => a.result === 'wall').length,
+      free: log.attempts.filter(a => a.result === 'free').length,
       moment: log.attempts.filter(a => a.result === 'moment').length,
       balance: log.attempts.filter(a => a.result === 'balance').length,
       total: log.attempts.length,
@@ -331,8 +340,8 @@ export default function HandstandPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-2">
-            {(['wall', 'moment', 'balance'] as HandstandResult[]).map(result => {
+          <div className="grid grid-cols-2 gap-2">
+            {(['wall', 'free', 'moment', 'balance'] as HandstandResult[]).map(result => {
               const cfg = RESULT_CONFIG[result];
               const count = currentLog.attempts.filter(a => a.result === result).length;
               return (
@@ -468,6 +477,9 @@ export default function HandstandPage() {
                         {day.moment > 0 && (
                           <div className="bg-amber-400 w-full" style={{ flex: day.moment }} />
                         )}
+                        {day.free > 0 && (
+                          <div className="bg-sky-300 w-full" style={{ flex: day.free }} />
+                        )}
                         {day.wall > 0 && (
                           <div className="bg-red-400 w-full" style={{ flex: day.wall }} />
                         )}
@@ -486,7 +498,7 @@ export default function HandstandPage() {
               ))}
             </div>
 
-            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-slate-100">
+            <div className="flex items-center flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-3 border-t border-slate-100">
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-sm bg-emerald-400" />
                 <span className="text-xs text-slate-500">Balanced</span>
@@ -494,6 +506,10 @@ export default function HandstandPage() {
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-sm bg-amber-400" />
                 <span className="text-xs text-slate-500">Held a sec</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm bg-sky-300" />
+                <span className="text-xs text-slate-500">Fell free</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-sm bg-red-400" />
