@@ -10,6 +10,7 @@ const GOAL = 100;
 // Phase thresholds (based on last 15 attempts, min 5 to leave phase 1)
 const PHASE2_FREESTANDING = 0.50; // 50% moment+balance → phase 2
 const PHASE3_EXTENDED = 0.25;     // 25% balance → phase 3
+const PHASE4_EXTENDED = 0.50;     // 50% balance → phase 4
 
 const RESULT_CONFIG: Record<HandstandResult, {
   label: string;
@@ -49,10 +50,11 @@ const PHASE_COLORS = {
   1: { bg: 'bg-indigo-50', border: 'border-indigo-100', badge: 'bg-indigo-500', text: 'text-indigo-700', bar: 'bg-indigo-400' },
   2: { bg: 'bg-amber-50', border: 'border-amber-100', badge: 'bg-amber-500', text: 'text-amber-700', bar: 'bg-amber-400' },
   3: { bg: 'bg-emerald-50', border: 'border-emerald-100', badge: 'bg-emerald-500', text: 'text-emerald-700', bar: 'bg-emerald-400' },
+  4: { bg: 'bg-violet-50', border: 'border-violet-100', badge: 'bg-violet-500', text: 'text-violet-700', bar: 'bg-violet-400' },
 } as const;
 
 interface PhaseInfo {
-  phase: 1 | 2 | 3;
+  phase: 1 | 2 | 3 | 4;
   name: string;
   focus: string;
   progressLabel: string;
@@ -68,14 +70,25 @@ function getPhaseInfo(allAttempts: HandstandAttempt[]): PhaseInfo {
   const balanceCount = window.filter(a => a.result === 'balance').length;
   const balanceRate = n > 0 ? balanceCount / n : 0;
 
+  if (n >= 5 && balanceRate >= PHASE4_EXTENDED) {
+    return {
+      phase: 4,
+      name: 'Going Freestanding',
+      focus: "The wall is just a backup now. Start pushing sessions where you kick without relying on it at all.",
+      progressLabel: `${Math.round(balanceRate * 100)}% of recent tries are extended holds`,
+      progressPct: Math.min((balanceRate / 0.75) * 100, 100),
+      nextPhase: null,
+    };
+  }
+
   if (n >= 5 && balanceRate >= PHASE3_EXTENDED) {
     return {
       phase: 3,
       name: 'Building Holds',
       focus: "Extended holds are happening! Each session, breathe and fight to stay up just a little longer.",
-      progressLabel: `${Math.round(balanceRate * 100)}% of recent tries are extended holds`,
-      progressPct: Math.min((balanceRate / 0.5) * 100, 100),
-      nextPhase: null,
+      progressLabel: `${Math.round(balanceRate * 100)}% extended holds in last ${n} (need 50%)`,
+      progressPct: Math.min((balanceRate / PHASE4_EXTENDED) * 100, 99),
+      nextPhase: 'Going Freestanding',
     };
   }
 
